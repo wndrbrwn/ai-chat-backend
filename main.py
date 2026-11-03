@@ -1,4 +1,11 @@
 import os
+from database import (
+    init_database,
+    save_message,
+    get_messages,
+    get_sessions,
+    delete_messages
+)
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field, field_validator
 from openai import OpenAI
@@ -15,8 +22,9 @@ def get_ai_response(question, messages):
     answer = response.choices[0].message.content
     return answer
 
+
 app = FastAPI()
-chat_sessions = {}
+init_database()
 
 client = OpenAI(
     base_url="https://openrouter.ai/api/v1",
@@ -52,38 +60,40 @@ def receive_message(data: UserMessage):
 
 @app.post("/ask")
 def ask_ai(data: ChatRequest):
-    messages = chat_sessions.get(data.session_id, [])
-    
+    # 1. 데이터베이스에서 이전 대화 불러오기
+    messages = get_messages(data.session_id)
+
     try:
+        # 2. AI에게 질문 전달
         answer = get_ai_response(data.question, messages)
-    
+
     except Exception as e:
         print("OpenRouter 오류:", e)
         raise HTTPException(
-        status_code=502,
-        detail="AI 서비스 요청에 실패했습니다."
-        )    
-    
-    messages.append({"role": "user", "content": data.question})
-    messages.append({"role": "assistant", "content": answer})
+            status_code=502,
+            detail="AI 서비스 요청에 실패했습니다."
+        )
 
-    chat_sessions[data.session_id] = messages
-    
+    # 3. 성공한 경우에만 질문과 답변 저장
+    save_message(data.session_id, "user", data.question)
+    save_message(data.session_id, "assistant", answer)
+
     return {"answer": answer}
 
 @app.delete("/sessions/{session_id}")
 def delete_session(session_id:str):
-    if session_id not in chat_sessions:
+    if session_id not in get_sessions():
         raise HTTPException(
             status_code=404,
             detail="세션을 찾을 수 없습니다."
             )
         
-    del chat_sessions[session_id]
+    delete_messages(session_id)
+
     return {"message": "해당 세션 삭제 성공"}
 
 @app.get("/sessions")
-def get_session():
-    return {"sessions": chat_sessions}
+def list_sessions():
+    return {"sessions": get_sessions()}
 
 

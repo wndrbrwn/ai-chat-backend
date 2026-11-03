@@ -81,3 +81,23 @@ def update_message(message_id, new_content):
     conn.commit()
     conn.close()
 
+def get_sessions():
+    conn = sqlite3.connect("chat_history.db")
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT DISTINCT session_id
+        FROM chat_messages
+        ORDER BY session_id
+    """)
+
+    rows = cursor.fetchall()
+
+    sessions = []
+
+    for row in rows:
+        sessions.append(row[0])
+
+    conn.close()
+
+    return sessions
