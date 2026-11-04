@@ -30,6 +30,31 @@ def save_message(session_id, role, content):
     conn.commit()
     conn.close()
 
+def save_exchange(session_id, question, answer):
+    conn = sqlite3.connect("chat_history.db")
+
+    try:
+        cursor = conn.cursor()
+        cursor.execute("""
+            INSERT INTO chat_messages(session_id, role, content)
+            VALUES(?, ?, ?)
+            """,
+            (session_id, "user", question)
+            )
+        cursor.execute("""
+            INSERT INTO chat_messages(session_id, role, content)
+            VALUES(?, ?, ?)
+            """,
+            (session_id, "assistant", answer)
+            )
+        conn.commit()
+    except Exception:
+        conn.rollback()
+        raise
+
+    finally:
+        conn.close()
+
 def get_messages(session_id):
     conn = sqlite3.connect("chat_history.db")
     cursor = conn.cursor()

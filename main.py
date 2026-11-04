@@ -4,7 +4,8 @@ from database import (
     save_message,
     get_messages,
     get_sessions,
-    delete_messages
+    delete_messages,
+    save_exchange
 )
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field, field_validator
@@ -75,9 +76,8 @@ def ask_ai(data: ChatRequest):
         )
 
     # 3. 성공한 경우에만 질문과 답변 저장
-    save_message(data.session_id, "user", data.question)
-    save_message(data.session_id, "assistant", answer)
-
+    save_exchange(data.session_id, data.question, answer)
+   
     return {"answer": answer}
 
 @app.delete("/sessions/{session_id}")
