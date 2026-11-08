@@ -22,6 +22,7 @@ This project provides RESTful APIs for AI conversations, persistent chat history
 - **Atomic Message Storage:** Save user messages and AI responses within a single database transaction.
 - **Input Validation:** Reject empty or whitespace-only session IDs and questions.
 - **Error Handling:** Return appropriate HTTP status codes for invalid requests, missing sessions, and AI service failures.
+- **Automated Tests:** pytest tests for database functions and the /ask endpoint (AI calls are mocked).
 
 ## API Endpoints
 
@@ -99,6 +100,14 @@ http://127.0.0.1:8000/docs
 
 Swagger UI provides an interactive interface for testing the API endpoints.
 
+### 7. Run the tests
+
+```powershell
+python -m pytest
+```
+
+The tests use a temporary SQLite database and mock the AI call, so they do not touch `chat_history.db` or call OpenRouter. No API key is required to run them.
+
 ## Database Design
 
 The project uses SQLite to store individual chat messages.
@@ -119,7 +128,6 @@ Each message is stored as a separate row. Session histories are retrieved using 
 - The project currently uses the OpenRouter free model endpoint. Model availability and response quality may vary.
 - Session identification is handled through client-provided session IDs.
 - No authentication or user account system is currently implemented.
-- Automated tests have not been written yet.
 - The project is currently designed as a local development application.
 
 ## Project Goals

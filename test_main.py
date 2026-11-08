@@ -20,3 +20,17 @@ def test_ask_returns_fake_answer(tmp_path, monkeypatch):
         {"role": "user", "content": "hi"}, 
         {"role": "assistant", "content": "fake answer"}
         ]
+
+def test_ask_returns_502_when_ai_fails(tmp_path, monkeypatch):
+    monkeypatch.setattr(database, "DB_PATH", str(tmp_path / "test.db"))
+    database.init_database()
+
+    def fail(question, messages):
+        raise EXCEPTION("AI DOWN")
+
+    monkeypatch.setattr(main, "get_ai_response", fail)
+
+    response = client.post("/ask", json={"session_id": "a", "question": "hi"})
+
+    assert response.status_code == 502
+    assert database.get_messages("a") == []
