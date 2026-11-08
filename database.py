@@ -1,7 +1,9 @@
 import sqlite3
 
+DB_PATH = "chat_history.db"
+
 def init_database():
-    conn = sqlite3.connect("chat_history.db")
+    conn = sqlite3.connect(DB_PATH)
     try:
         cursor = conn.cursor()
         
@@ -20,7 +22,7 @@ def init_database():
         conn.close()
 
 def save_message(session_id, role, content):
-    conn = sqlite3.connect("chat_history.db")
+    conn = sqlite3.connect(DB_PATH)
     try:
         cursor = conn.cursor()
         
@@ -37,7 +39,7 @@ def save_message(session_id, role, content):
         conn.close()
 
 def save_exchange(session_id, question, answer):
-    conn = sqlite3.connect("chat_history.db")
+    conn = sqlite3.connect(DB_PATH)
 
     try:
         cursor = conn.cursor()
@@ -62,7 +64,7 @@ def save_exchange(session_id, question, answer):
         conn.close()
 
 def get_messages(session_id):
-    conn = sqlite3.connect("chat_history.db")
+    conn = sqlite3.connect(DB_PATH)
 
     try:
         cursor = conn.cursor()
@@ -91,7 +93,7 @@ def get_messages(session_id):
     
 
 def delete_messages(session_id):
-    conn = sqlite3.connect("chat_history.db")
+    conn = sqlite3.connect(DB_PATH)
 
     try:
         cursor = conn.cursor()
@@ -107,7 +109,7 @@ def delete_messages(session_id):
         conn.close()
 
 def update_message(message_id, new_content):
-    conn = sqlite3.connect("chat_history.db")
+    conn = sqlite3.connect(DB_PATH)
     
     try:
         cursor = conn.cursor()
@@ -126,7 +128,7 @@ def update_message(message_id, new_content):
         conn.close()
 
 def get_sessions():
-    conn = sqlite3.connect("chat_history.db")
+    conn = sqlite3.connect(DB_PATH)
 
     try:    
         cursor = conn.cursor()
