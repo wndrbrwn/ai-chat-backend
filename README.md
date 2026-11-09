@@ -108,6 +108,10 @@ python -m pytest
 
 The tests use a temporary SQLite database and mock the AI call, so they do not touch `chat_history.db` or call OpenRouter. No API key is required to run them.
 
+## Run with Docker
+
+docker build -t ai-chat-backend .
+docker run --rm -p 8000:8000 -e OPENROUTER_API_KEY=<your-key> ai-chat-backend
 ## Database Design
 
 The project uses SQLite to store individual chat messages.
