@@ -1,7 +1,7 @@
 import os
+import logging
 from database import (
     init_database,
-    save_message,
     get_messages,
     get_sessions,
     delete_messages,
@@ -26,7 +26,11 @@ def get_ai_response(question, messages):
 
 app = FastAPI()
 init_database()
-
+logging.basicConfig(
+    level = logging.INFO,
+    format = "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
+)
+logger = logging.getLogger(__name__)
 client = OpenAI(
     base_url="https://openrouter.ai/api/v1",
     api_key=os.environ["OPENROUTER_API_KEY"]
@@ -68,8 +72,8 @@ def ask_ai(data: ChatRequest):
         # 2. AI에게 질문 전달
         answer = get_ai_response(data.question, messages)
 
-    except Exception as e:
-        print("OpenRouter 오류:", e)
+    except Exception:
+        logger.exception("OpenRouter 요청 실패")
         raise HTTPException(
             status_code=502,
             detail="AI 서비스 요청에 실패했습니다."
@@ -77,7 +81,8 @@ def ask_ai(data: ChatRequest):
 
     # 3. 성공한 경우에만 질문과 답변 저장
     save_exchange(data.session_id, data.question, answer)
-   
+    logger.info("대화 저장 완료 session_id = %s", data.session_id)
+
     return {"answer": answer}
 
 @app.delete("/sessions/{session_id}")
