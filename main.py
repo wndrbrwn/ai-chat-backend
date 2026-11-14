@@ -9,15 +9,15 @@ from database import (
 )
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field, field_validator
-from openai import OpenAI
+from openai import AsyncOpenAI
 from rag import answer_with_rag, collection
 
-def get_ai_response(question, messages):
+async def get_ai_response(question, messages):
     request_messages = messages[-6:] + [
     {"role": "user", "content": question}
     ]
 
-    response = client.chat.completions.create(
+    response = await client.chat.completions.create(
         model = "openrouter/free",
         messages = request_messages
     )
@@ -32,7 +32,7 @@ logging.basicConfig(
     format = "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
 )
 logger = logging.getLogger(__name__)
-client = OpenAI(
+client = AsyncOpenAI(
     base_url="https://openrouter.ai/api/v1",
     api_key=os.environ["OPENROUTER_API_KEY"]
 )
@@ -68,13 +68,13 @@ def receive_message(data: UserMessage):
     return {"reply": f"{data.name}님, {data.message} 메시지를 받았습니다."}
 
 @app.post("/ask")
-def ask_ai(data: ChatRequest):
+async def ask_ai(data: ChatRequest):
     # 1. 데이터베이스에서 이전 대화 불러오기
     messages = get_messages(data.session_id)
 
     try:
         # 2. AI에게 질문 전달
-        answer = get_ai_response(data.question, messages)
+        answer = await get_ai_response(data.question, messages)
 
     except Exception:
         logger.exception("OpenRouter 요청 실패")
