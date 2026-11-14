@@ -10,6 +10,7 @@ from database import (
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field, field_validator
 from openai import OpenAI
+from rag import answer_with_rag, collection
 
 def get_ai_response(question, messages):
     request_messages = messages[-6:] + [
@@ -45,7 +46,10 @@ class ChatRequest(BaseModel):
     def validate_input(cls, value):
         if isinstance(value, str):
             return value.strip()
-        return value       
+        return value      
+
+class DocRequest(BaseModel):
+    question: str = Field(min_length=1)     
         
 class UserMessage(BaseModel):
     name: str
@@ -83,6 +87,19 @@ def ask_ai(data: ChatRequest):
     save_exchange(data.session_id, data.question, answer)
     logger.info("대화 저장 완료 session_id = %s", data.session_id)
 
+    return {"answer": answer}
+
+@app.post("/ask-doc")
+def ask_doc(data: DocRequest):
+    try:
+        answer = answer_with_rag(data.question, collection)
+    
+    except Exception:
+        logger.exception("RAG 요청 실패")
+        raise HTTPException(
+            status_code=502,
+            detail="문서 질의에 실패했습니다."
+        )
     return {"answer": answer}
 
 @app.delete("/sessions/{session_id}")
