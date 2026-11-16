@@ -11,6 +11,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field, field_validator
 from openai import AsyncOpenAI
 from rag import answer_with_rag, collection
+from fastapi.responses import StreamingResponse
 
 async def get_ai_response(question, messages):
     request_messages = messages[-6:] + [
@@ -24,6 +25,28 @@ async def get_ai_response(question, messages):
     answer = response.choices[0].message.content
     return answer
 
+async def stream_ai_response(session_id, question, messages):
+    request_messages = messages[-6:] + [
+        {"role": "user", "content": question}
+    ]
+
+    stream = await client.chat.completions.create(
+        model = "openrouter/free",
+        messages = request_messages,
+        stream = True
+    )
+
+    chunks = []
+    async for chunk in stream:
+        if not chunk.choices:
+            continue
+        text = chunk.choices[0].delta.content
+        if text:
+            chunks.append(text)
+            yield text
+
+    answer = "".join(chunks)
+    save_exchange(session_id, question, answer)
 
 app = FastAPI()
 init_database()
@@ -36,6 +59,7 @@ client = AsyncOpenAI(
     base_url="https://openrouter.ai/api/v1",
     api_key=os.environ["OPENROUTER_API_KEY"]
 )
+
 
 class ChatRequest(BaseModel):
     session_id: str = Field(min_length=1)
@@ -88,6 +112,14 @@ async def ask_ai(data: ChatRequest):
     logger.info("대화 저장 완료 session_id = %s", data.session_id)
 
     return {"answer": answer}
+
+@app.post("/ask-stream")
+async def ask_stream(data: ChatRequest):
+    messages = get_messages(data.session_id)
+    return StreamingResponse(
+        stream_ai_response(data.session_id, data.question, messages),
+        media_type="text@plain"
+    )
 
 @app.post("/ask-doc")
 def ask_doc(data: DocRequest):
