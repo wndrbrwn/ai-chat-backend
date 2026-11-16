@@ -29,21 +29,29 @@ async def stream_ai_response(session_id, question, messages):
     request_messages = messages[-6:] + [
         {"role": "user", "content": question}
     ]
-
-    stream = await client.chat.completions.create(
-        model = "openrouter/free",
-        messages = request_messages,
-        stream = True
-    )
-
+    
     chunks = []
-    async for chunk in stream:
-        if not chunk.choices:
-            continue
-        text = chunk.choices[0].delta.content
-        if text:
-            chunks.append(text)
-            yield text
+    
+    try:
+        stream = await client.chat.completions.create(
+            model = "openrouter/free",
+            messages = request_messages,
+            stream = True
+        )
+
+        
+        async for chunk in stream:
+            if not chunk.choices:
+                continue
+            text = chunk.choices[0].delta.content
+            if text:
+                chunks.append(text)
+                yield text
+    
+    except Exception:
+        logger.exception("OpenRouter 요청 실패")
+        yield "AI 서비스 요청에 실패했습니다."
+        return
 
     answer = "".join(chunks)
     save_exchange(session_id, question, answer)
@@ -103,8 +111,8 @@ async def ask_ai(data: ChatRequest):
     except Exception:
         logger.exception("OpenRouter 요청 실패")
         raise HTTPException(
-            status_code=502,
-            detail="AI 서비스 요청에 실패했습니다."
+            status_code = 502,
+            detail = "AI 서비스 요청에 실패했습니다."
         )
 
     # 3. 성공한 경우에만 질문과 답변 저장
@@ -118,7 +126,7 @@ async def ask_stream(data: ChatRequest):
     messages = get_messages(data.session_id)
     return StreamingResponse(
         stream_ai_response(data.session_id, data.question, messages),
-        media_type="text@plain"
+        media_type = "text@plain"
     )
 
 @app.post("/ask-doc")
@@ -129,8 +137,8 @@ def ask_doc(data: DocRequest):
     except Exception:
         logger.exception("RAG 요청 실패")
         raise HTTPException(
-            status_code=502,
-            detail="문서 질의에 실패했습니다."
+            status_code = 502,
+            detail = "문서 질의에 실패했습니다."
         )
     return {"answer": answer}
 
