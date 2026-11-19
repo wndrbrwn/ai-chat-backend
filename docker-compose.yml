@@ -1,0 +1,16 @@
+services:
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      DB_PATH: /app/data/chat_history.db
+    volumes:
+      - db_data:/app/data
+      - chroma_data:/app/chroma_db
+
+volumes:
+  db_data:
+  chroma_data:

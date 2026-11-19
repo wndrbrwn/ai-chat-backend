@@ -1,6 +1,7 @@
+import os
 import sqlite3
 
-DB_PATH = "chat_history.db"
+DB_PATH = os.getenv("DB_PATH", "chat_history.db")
 
 def init_database():
     conn = sqlite3.connect(DB_PATH)
