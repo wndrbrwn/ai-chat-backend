@@ -12,6 +12,7 @@ llm = OpenAI(
 )
 
 def index_document(source, text, collection):
+    collection.delete(where = {"source": source})
     chunks = chunk_text(text, 200, 40)
     ids = [f"{source} - {i}" for i in range(len(chunks))]
     metadatas = [{"source": source, "chunk": i} for i in range(len(chunks))]
@@ -19,7 +20,7 @@ def index_document(source, text, collection):
     return len(chunks)
 
 def answer_with_rag(question, collection):
-    results = collection.query(query_embeddings = embed([question]), n_results = 3)
+    results = collection.query(query_embeddings = embed([question]), n_results = 8)
     chunks = results["documents"][0]
 
     context = "\n\n".join(chunks)
