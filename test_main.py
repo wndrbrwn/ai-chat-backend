@@ -98,3 +98,22 @@ def test_ask_doc_returns_502_when_rag_fails(monkeypatch):
 
     assert response.status_code == 502
     assert response.json()["detail"] == "문서 질의에 실패했습니다."
+
+def test_upload_document_success(monkeypatch):
+    monkeypatch.setattr("main.index_document", lambda source, text, collection: 3)
+
+    response = client.post(
+        "/documents", 
+        files = {"file": ("a.txt", "안녕하세요".encode("utf-8"), "text/plain")},
+    )
+
+    assert response.status_code == 200
+    assert response.json() == {"source": "a.txt", "chunks": 3}
+
+def test_upload_document_rejects_non_txt():
+    response = client.post(
+        "/documents",
+        files={"file": ("b.pdf", b"dummy", "application/pdf")},
+    )
+
+    assert response.status_code == 400

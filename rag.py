@@ -11,9 +11,12 @@ llm = OpenAI(
     api_key = os.environ["OPENROUTER_API_KEY"],
 )
 
-def index_document(doc_id, chunks):
-    ids = [f"{doc_id}-{i}" for i in range(len(chunks))]
-    collection.upsert(ids = ids, documents = chunks, embeddings = embed(chunks))
+def index_document(source, text, collection):
+    chunks = chunk_text(text, 200, 40)
+    ids = [f"{source} - {i}" for i in range(len(chunks))]
+    metadatas = [{"source": source, "chunk": i} for i in range(len(chunks))]
+    collection.upsert(ids = ids, documents = chunks, embeddings = embed(chunks), metadatas = metadatas)
+    return len(chunks)
 
 def answer_with_rag(question, collection):
     results = collection.query(query_embeddings = embed([question]), n_results = 3)

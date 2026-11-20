@@ -7,10 +7,10 @@ from database import (
     delete_messages,
     save_exchange
 )
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, UploadFile, File
 from pydantic import BaseModel, Field, field_validator
 from openai import AsyncOpenAI
-from rag import answer_with_rag, collection
+from rag import answer_with_rag, collection, index_document
 from fastapi.responses import StreamingResponse
 
 async def get_ai_response(question, messages):
@@ -141,6 +141,31 @@ def ask_doc(data: DocRequest):
             detail = "문서 질의에 실패했습니다."
         )
     return {"answer": answer}
+
+@app.post("/documents")
+def upload_document(file: UploadFile = File(...)):
+    if not file.filename.endswith(".txt"):
+        raise HTTPException(status_code = 400, detail = ".txt 파일만 업로드할 수 있습니다.")
+    
+    raw = file.file.read()
+
+    try:
+        text = raw.decode("utf-8")
+
+    except UnicodeDecodeError:
+        raise HTTPException(status_code = 400, detail = "UTF-8 텍스트 파일만 가능합니다.")
+
+    if not text.strip():
+        raise HTTPException(status_code = 400, detail = "빈 파일입니다.")
+
+    try:
+        count = index_document(file.filename, text, collection)
+
+    except Exception:
+        logger.exception("문서 색인 실패")
+        raise HTTPException(status_code = 502, detail = "문서 색인에 실패했습니다.")
+
+    return {"source": file.filename, "chunks": count}
 
 @app.delete("/sessions/{session_id}")
 def delete_session(session_id:str):
