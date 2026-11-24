@@ -1,0 +1,68 @@
+Source: https://https://openrouter.ai/ko/pricing/
+Title: OpenRouter Price
+
+OpenRouter 요금
+요금
+인디 해커, AI 네이티브 스타트업, 성장하는 팀 및 기업을 위한 요금제
+
+무료	Standard
+종량제
+Business
+종량제
+Enterprise
+플랫폼 수수료	무료해당 없음	Standard5.5%	Business8%	Enterprise수수료 할인 가능
+모델
+모든 모델 살펴보기 →
+무료25개 이상의 무료 모델	Standard600+개의 모델	Business600+개의 모델	Enterprise600+개의 모델
+제공업체
+모든 모델 살펴보기 →
+무료무료 제공업체 4개	Standard제공업체 80+개	Business제공업체 80+개	Enterprise제공업체 80+개
+채팅 및 API 액세스
+지금 채팅 사용해 보기 →
+무료예	Standard예	Business예	Enterprise예
+활동 로그 및 내보내기	무료예	Standard예	Business예	Enterprise예
+자동 라우팅, 선호 업체 선택
+자세히 알아보기 →
+무료아니요	Standard예	Business예	Enterprise예
+예산 및 지출 제어	무료아니요	Standard예	Business예	Enterprise예
+고급 알림
+자세히 알아보기 →
+무료아니요	Standard아니요	Business예	Enterprise예
+프롬프트 캐싱
+자세히 알아보기 →
+무료아니요	Standard예	Business예	Enterprise예
+Management API 키
+자세히 알아보기 →
+무료아니요	Standard예	Business예	Enterprise예
+관리자 제어
+Enterprise 기능 →
+무료아니요	Standard예	Business예	Enterprise예
+데이터 정책 기반 라우팅
+모델 및 제공업체 정책
+무료아니요	Standard예	Business예	Enterprise예
+EU 역내 라우팅
+자세히 알아보기 →
+무료아니요	Standard아니요	Business예	Enterprise예
+미국 리전 내 라우팅
+자세히 알아보기 →
+무료아니요	Standard아니요	Business예	Enterprise예
+워크로드 ID 페더레이션
+자세히 알아보기 →
+무료아니요	Standard아니요	Business예	Enterprise예
+비공개 엔드포인트
+자세히 알아보기 →
+무료아니요	Standard아니요	Business아니요	Enterprise추가 옵션
+워크스페이스 한도
+자세히 알아보기 →
+무료5	Standard5	Business1,000	Enterprise사용자 지정
+DPA	무료서비스 약관을 통해	Standard서비스 약관을 통해	Business서비스 이용약관을 통해 제공, 요청 시 서명된 사본 제공	Enterprise사용자 지정 가능
+관리형 정책 적용
+무료아니요	Standard아니요	Business아니요	Enterprise예
+SSO/SAML	무료아니요	Standard아니요	Business아니요	Enterprise예
+계약상 SLA	무료아니요	Standard아니요	Business아니요	Enterprise예
+결제 옵션	무료아니요	Standard신용카드, 암호화폐 등	Business신용카드, 암호화폐 등	Enterprise청구서 발행 옵션
+BYOK 한도
+자세히 알아보기 →
+무료아니요	Standard월 정가 기준 추론 $25,000까지 수수료 없음, 이후 수수료 5%	Business월 정가 기준 추론 $25,000까지 수수료 없음, 이후 수수료 5%	Enterprise사용자 지정
+속도 제한	무료하루 50회 요청	Standard제공업체의 요금 그대로 적용	Business제공업체의 요금 그대로 적용	Enterprise더 높은 사용 한도 제공
+지원	무료커뮤니티 지원	Standard이메일 지원	Business이메일 지원	Enterprise전담 지원팀
