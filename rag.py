@@ -22,6 +22,7 @@ def index_document(source, text, collection):
 def answer_with_rag(question, collection):
     results = collection.query(query_embeddings = embed([question]), n_results = 5)
     chunks = results["documents"][0]
+    metadatas = results["metadatas"][0] 
 
     context = "\n\n".join(chunks)
 
@@ -41,10 +42,7 @@ def answer_with_rag(question, collection):
         ]
     )
 
-    return response.choices[0].message.content
-
-if __name__ == "__main__":
-    text = open("sample.txt", encoding = "utf-8").read()
-    chunks = chunk_text(text, 200, 40)
-    index_document("sample", chunks)
-    print(collection.count())
+    return {
+        "answer": response.choices[0].message.content,
+        "sources": metadatas
+        }

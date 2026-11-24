@@ -79,14 +79,16 @@ def test_stream_failure_sends_message_and_does_not_save(tmp_path, monkeypatch):
 
 def test_ask_doc_returns_fake_answer(monkeypatch):
     def fake_answer_with_rag(question,collection):
-        return "fake answer"
+        return {"answer": "fake answer",
+                "sources": []}
 
     monkeypatch.setattr(main, "answer_with_rag", fake_answer_with_rag)
 
     response = client.post("/ask-doc", json = {"question": "테스트 질문"})
 
     assert response.status_code == 200
-    assert response.json() == {"answer": "fake answer"}
+    assert response.json() == {"answer": "fake answer",
+                               "sources": []}
 
 def test_ask_doc_returns_502_when_rag_fails(monkeypatch):
     def fake_answer_with_rag(question, collection):

@@ -132,7 +132,7 @@ async def ask_stream(data: ChatRequest):
 @app.post("/ask-doc")
 def ask_doc(data: DocRequest):
     try:
-        answer = answer_with_rag(data.question, collection)
+        result = answer_with_rag(data.question, collection)
     
     except Exception:
         logger.exception("RAG 요청 실패")
@@ -140,7 +140,7 @@ def ask_doc(data: DocRequest):
             status_code = 502,
             detail = "문서 질의에 실패했습니다."
         )
-    return {"answer": answer}
+    return {"answer": result["answer"], "sources": result["sources"]}
 
 @app.post("/documents")
 def upload_document(file: UploadFile = File(...)):
