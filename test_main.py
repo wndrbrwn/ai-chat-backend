@@ -3,10 +3,17 @@ os.environ.setdefault("OPENROUTER_API_KEY", "test-key")
 from types import SimpleNamespace
 import database
 import main
+import pytest
 from fastapi.testclient import TestClient
+from database import get_messages
 
 client = TestClient(main.app)
 
+@pytest.fixture
+def temp_db(monkeypatch, tmp_path):
+    monkeypatch.setattr(database, "DB_PATH", str(tmp_path / "test.db"))
+    database.init_database()
+    
 def test_ask_returns_fake_answer(tmp_path, monkeypatch):
     monkeypatch.setattr(database, "DB_PATH", str(tmp_path / "test.db"))
     database.init_database()
@@ -100,6 +107,22 @@ def test_ask_doc_returns_502_when_rag_fails(monkeypatch):
 
     assert response.status_code == 502
     assert response.json()["detail"] == "문서 질의에 실패했습니다."
+
+def test_ask_doc_save_exchange_success(monkeypatch, temp_db):
+    monkeypatch.setattr(main, "answer_with_rag", lambda question, collection, history: 
+        {
+        "answer": "hello",
+        "sources": "a"
+        }
+    )
+
+    response = client.post("/ask-doc", json = {"session_id": "a", "question": "테스트 질문"})
+    
+    saved = get_messages("a")
+
+    assert response.status_code == 200
+    assert response.json() == {"answer": "hello", "sources": "a"}
+    assert [m["role"] for m in saved] == ["user", "assistant"]
 
 def test_upload_document_success(monkeypatch):
     monkeypatch.setattr("main.index_document", lambda source, text, collection: 3)
