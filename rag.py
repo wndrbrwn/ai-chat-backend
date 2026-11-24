@@ -20,11 +20,12 @@ def index_document(source, text, collection):
     collection.upsert(ids = ids, documents = chunks, embeddings = embed(chunks), metadatas = metadatas)
     return len(chunks)
 
-def answer_with_rag(question, collection):
+def answer_with_rag(question, collection, history = None):
     results = collection.query(query_embeddings = embed([question]), n_results = 5)
     chunks = results["documents"][0]
     metadatas = results["metadatas"][0] 
     distances = results["distances"][0]
+    history = history or []
 
     pairs = [(c, m) for c, m, d in zip(chunks, metadatas, distances) if d < MAX_DISTANCE]
     if not pairs:
@@ -46,7 +47,7 @@ def answer_with_rag(question, collection):
     response = llm.chat.completions.create(
         model = "openrouter/free",
         messages =[
-            {"role": "user", "content": prompt}
+            history[-6:] + [{"role": "user", "content": prompt}]
         ]
     )
 

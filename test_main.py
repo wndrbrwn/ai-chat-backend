@@ -78,25 +78,25 @@ def test_stream_failure_sends_message_and_does_not_save(tmp_path, monkeypatch):
     assert database.get_messages("c")  == []
 
 def test_ask_doc_returns_fake_answer(monkeypatch):
-    def fake_answer_with_rag(question,collection):
+    def fake_answer_with_rag(question, collection, history):
         return {"answer": "fake answer",
                 "sources": []}
 
     monkeypatch.setattr(main, "answer_with_rag", fake_answer_with_rag)
 
-    response = client.post("/ask-doc", json = {"question": "테스트 질문"})
+    response = client.post("/ask-doc", json = {"session_id": "a", "question": "테스트 질문"})
 
     assert response.status_code == 200
     assert response.json() == {"answer": "fake answer",
                                "sources": []}
 
 def test_ask_doc_returns_502_when_rag_fails(monkeypatch):
-    def fake_answer_with_rag(question, collection):
+    def fake_answer_with_rag(question, collection, history):
         raise Exception("RAG 실패")
 
     monkeypatch.setattr(main, "answer_with_rag", fake_answer_with_rag)
 
-    response = client.post("/ask-doc", json = {"question": "테스트 질문"})
+    response = client.post("/ask-doc", json = {"session_id": "a", "question": "테스트 질문"})
 
     assert response.status_code == 502
     assert response.json()["detail"] == "문서 질의에 실패했습니다."

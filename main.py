@@ -132,9 +132,10 @@ async def ask_stream(data: ChatRequest):
     )
 
 @app.post("/ask-doc")
-def ask_doc(data: DocRequest):
+def ask_doc(data: ChatRequest):
+    history = get_messages(data.session_id)
     try:
-        result = answer_with_rag(data.question, collection)
+        result = answer_with_rag(data.question, collection, history)
     
     except Exception:
         logger.exception("RAG 요청 실패")
@@ -142,6 +143,7 @@ def ask_doc(data: DocRequest):
             status_code = 502,
             detail = "문서 질의에 실패했습니다."
         )
+    save_exchange(data.session_id, data.question, result["answer"])
     return {"answer": result["answer"], "sources": result["sources"]}
 
 @app.post("/documents")
