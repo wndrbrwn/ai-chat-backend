@@ -46,9 +46,7 @@ def answer_with_rag(question, collection, history = None):
 
     response = llm.chat.completions.create(
         model = "openrouter/free",
-        messages =[
-            history[-6:] + [{"role": "user", "content": prompt}]
-        ]
+        messages = history[-6:] + [{"role": "user", "content": prompt}]
     )
 
     return {
