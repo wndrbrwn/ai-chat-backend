@@ -4,6 +4,7 @@ from openai import OpenAI
 from embed_demo import embed
 from chunk_demo import chunk_text
 
+MAX_DISTANCE = 1.5
 chroma_client = chromadb.PersistentClient(path = "chroma_db")
 collection = chroma_client.get_or_create_collection(name = "docs")
 llm = OpenAI(
@@ -23,6 +24,13 @@ def answer_with_rag(question, collection):
     results = collection.query(query_embeddings = embed([question]), n_results = 5)
     chunks = results["documents"][0]
     metadatas = results["metadatas"][0] 
+    distances = results["distances"][0]
+
+    pairs = [(c, m) for c, m, d in zip(chunks, metadatas, distances) if d < MAX_DISTANCE]
+    if not pairs:
+        return {"answer": "문서에서 찾을 수 없습니다", "sources": []}
+    chunks = [c for c, m in pairs]
+    metadatas = [m for c, m in pairs]
 
     context = "\n\n".join(chunks)
 
