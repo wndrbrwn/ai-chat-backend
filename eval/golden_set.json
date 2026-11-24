@@ -1,0 +1,82 @@
+[
+  {
+    "question": "OpenRouter는 어떤 역할을 하는 서비스인가요?",
+    "evidence": "OpenRouter operates a large language model aggregator"
+  },
+  {
+    "question": "이 플랫폼을 이용하려면 최소 몇 살이어야 하나요?",
+    "evidence": "You must be at least 18 years of age to use the Service."
+  },
+  {
+    "question": "사용자 계정에서 발생한 활동에 대한 책임은 누구에게 있나요?",
+    "evidence": "you accept responsibility for all activities that occur under your account."
+  },
+  {
+    "question": "접속용 비밀정보가 유출되었을 때 회사가 취할 수 있는 조치는 무엇인가요?",
+    "evidence": "OpenRouter may suspend, revoke, or limit API Credentials or account access"
+  },
+  {
+    "question": "암호화폐로 결제한 거래도 취소하고 환불받을 수 있나요?",
+    "evidence": "Cryptocurrency payments are never refundable."
+  },
+  {
+    "question": "자동 충전 기능을 설정한 뒤 변경하거나 해제할 수 있나요?",
+    "evidence": "You may update or cancel Auto Recharge at any time through your account page."
+  },
+  {
+    "question": "무료 프로모션으로 받은 크레딧은 어디에서 사용할 수 있나요?",
+    "evidence": "Promo Credits may only be used on the Service"
+  },
+  {
+    "question": "보유 잔액을 다른 계정으로 이전하는 것이 허용되나요?",
+    "evidence": "Credits are non-transferable, including between accounts"
+  },
+  {
+    "question": "선택한 AI 모델에 별도로 적용되는 조건은 누가 살펴봐야 하나요?",
+    "evidence": "You are solely responsible for reviewing the Model Terms"
+  },
+  {
+    "question": "플랫폼은 특정 모델을 항상 사용할 수 있다고 약속하나요?",
+    "evidence": "OpenRouter does not guarantee availability of any Model"
+  },
+  {
+    "question": "서비스에서 사용할 모델과 계정 설정을 결정하는 주체는 누구인가요?",
+    "evidence": "You are solely responsible for selecting the Models you use"
+  },
+  {
+    "question": "어떤 모델은 사용자가 보낸 입력 내용을 자체 학습에 활용할 수도 있나요?",
+    "evidence": "Some Models may store or train on your Inputs"
+  },
+  {
+    "question": "What additional logging behavior is enabled when a user opts into prompt logging?",
+    "evidence": "chat logging is also automatically enabled"
+  },
+  {
+    "question": "For an individual account, who can view content saved through Private Prompt Storage?",
+    "evidence": "or only to you, if you have an individual account."
+  },
+  {
+    "question": "Until what event does OpenRouter retain uploaded files?",
+    "evidence": "We retain Uploaded Files until you delete them or close your account"
+  },
+  {
+    "question": "Can a user access a model that its provider has designated as restricted?",
+    "evidence": "may not access these Restricted Models through our Service."
+  },
+  {
+    "question": "Under what authority may the company end a user's account?",
+    "evidence": "OpenRouter may in its sole discretion terminate your user account"
+  },
+  {
+    "question": "How are users advised to keep track of revisions to the agreement?",
+    "evidence": "Please check these Terms periodically for changes."
+  },
+  {
+    "question": "Which organization is identified as the operator of the platform?",
+    "evidence": "The Service is owned and operated by OpenRouter."
+  },
+  {
+    "question": "What form of court proceeding do both parties agree to give up?",
+    "evidence": "ARE EACH WAIVING THE RIGHT TO A TRIAL BY JURY"
+  }
+]
