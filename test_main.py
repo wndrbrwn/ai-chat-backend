@@ -115,7 +115,15 @@ def test_upload_document_success(monkeypatch):
 def test_upload_document_rejects_non_txt():
     response = client.post(
         "/documents",
-        files={"file": ("b.pdf", b"dummy", "application/pdf")},
+        files = {"file": ("b.pdf", b"dummy", "application/pdf")},
     )
 
     assert response.status_code == 400
+
+def test_upload_document_payload_too_large():
+    response = client.post(
+        "/documents",
+        files = {"file": ("b.txt", b"a" * (1 * 1024 * 1024 + 1), "text/plain")},
+    )
+
+    assert response.status_code == 413

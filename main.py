@@ -13,6 +13,8 @@ from openai import AsyncOpenAI
 from rag import answer_with_rag, collection, index_document
 from fastapi.responses import StreamingResponse
 
+MAX_UPLOAD_BYTES = 1 * 1024 * 1024
+
 async def get_ai_response(question, messages):
     request_messages = messages[-6:] + [
     {"role": "user", "content": question}
@@ -147,7 +149,10 @@ def upload_document(file: UploadFile = File(...)):
     if not file.filename.endswith(".txt"):
         raise HTTPException(status_code = 400, detail = ".txt 파일만 업로드할 수 있습니다.")
     
-    raw = file.file.read()
+    raw = file.file.read(MAX_UPLOAD_BYTES + 1)
+    
+    if len(raw) > MAX_UPLOAD_BYTES:
+        raise HTTPException(status_code = 413, detail = "파일이 너무 큽니다. 최대 1MB까지 가능합니다.")
 
     try:
         text = raw.decode("utf-8")
